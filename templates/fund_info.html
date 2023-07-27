@@ -1,0 +1,190 @@
+{% extends 'main.html' %}
+
+{% block main %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mb-3 mt-3">
+            <h3>{{fund.name}}</h3>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3 mt-3">
+                <a type="button" class="btn btn-outline-primary" href="/">返回</a>
+
+                <a type="button" class="btn btn-outline-dark" href="/user/logout">退出</a>
+
+                {%if favour%}
+                    {%if favour == 2%}
+                    <a type="button" class="btn btn-outline-danger" href="/watch/del/{{fund.code}}">删除自选</a>
+                    {%elif favour == 1%}
+                    <a type="button" class="btn btn-outline-warning" href="/watch/add/{{fund.code}}">添加自选</a>
+                    {%endif%}
+                {%endif%}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                            aria-controls="panelsStayOpen-collapseOne">
+                            基本信息
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                        aria-labelledby="panelsStayOpen-headingOne">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                <li class="list-group-item">代码：{{fund.code}}</li>
+                                <li class="list-group-item">类型：{{fund.type}}</li>
+                                <li class="list-group-item">手续费：{{fund.fee}} %</li>
+                                <li class="list-group-item">基金规模：{{fund.scale}} 亿元</li>
+                                <li class="list-group-item">基金经理：{{fund.manager}}</li>
+                                <li class="list-group-item">基金公司：{{fund.company}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseTwo">
+                            最新价值（{{fundprice.last_day}}）
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse"
+                        aria-labelledby="panelsStayOpen-headingTwo">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                <li class="list-group-item">单位净值：{{fundprice.unit_price}}</li>
+                                <li class="list-group-item">累计净值：{{fundprice.cum_price}}</li>
+                                <li class="list-group-item" style="color:{%if fundrt >= 0%}red{%else%}green{%endif%}"><strong>当前估值 ({{fundrt_now}})：{{fundrt}}%</strong></li>
+                                <li class="list-group-item" style="color:{%if fundprice.rate1 > 0%}red{%else%}green{%endif%}">日增长率：{{fundprice.show_rate_1}}%</li>
+                                <li class="list-group-item" style="color:{%if fundprice.rate7 > 0%}red{%else%}green{%endif%}">7日增长率：{{fundprice.show_rate_7}}%</li>
+                                <li class="list-group-item" style="color:{%if fundprice.rate30 > 0%}red{%else%}green{%endif%}">30日增长率：{{fundprice.show_rate_30}}%</</li>
+                                <li class="list-group-item" style="color:{%if fundprice.rate90 > 0%}red{%else%}green{%endif%}">3月增长率：{{fundprice.show_rate_90}}%</</li>
+                                <li class="list-group-item" style="color:{%if fundprice.rate180 > 0%}red{%else%}green{%endif%}">半年增长率：{{fundprice.show_rate_180}}%</</li>
+                                <li class="list-group-item" style="color:{%if fundprice.rate365 > 0%}red{%else%}green{%endif%}">1年增长率：{{fundprice.show_rate_365}}%</</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseThree">
+                            基金评级
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+                        aria-labelledby="panelsStayOpen-headingThree">
+                        <div class="accordion-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">评级机构</th>
+                                        <th scope="col">评分</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for s in fund.recommand%}
+                                    <tr>
+                                        <th scope="row">{{forloop.counter}}</th>
+                                        <td>{{s.name}}</td>
+                                        <td>{{s.star}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <th scope="row">综合</th>
+                                        <td></td>
+                                        <td style="color: red">{{fund.star}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseFour">
+                            基金持仓
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse"
+                        aria-labelledby="panelsStayOpen-headingFour">
+                        <div class="accordion-body">
+                            <p><strong>股票占比：{{fund.show_stock_share}}% 债券占比：{{fund.show_bond_share}}% 其他资产：{{fund.show_other_share}}%</strong></p>
+                            <p><strong>{% if fund.stock_season %}{{fund.stock_season}} {%else%}股票持仓{%endif%}</strong></p>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">股票代码</th>
+                                        <th scope="col">股票名称</th>
+                                        <th scope="col">股票占比(%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for s in fund.stock%}
+                                    <tr>
+                                        <th scope="row">{{forloop.counter}}</th>
+                                        <td>{{s.code}}</td>
+                                        <td>{{s.name}}</td>
+                                        <td>{{s.share}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <th scope="row">合计</th>
+                                        <td></td>
+                                        <td></td>
+                                        <td style="color: red">{{fund.show_head_stock_share}} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <strong>{% if fund.bond_season %}{{fund.bond_season}}{%else%}债券持仓{%endif%}</strong>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">债券代码</th>
+                                        <th scope="col">债券名称</th>
+                                        <th scope="col">债券占比(%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for s in fund.bond%}
+                                    <tr>
+                                        <th scope="row">{{forloop.counter}}</th>
+                                        <td>{{s.code}}</td>
+                                        <td>{{s.name}}</td>
+                                        <td>{{s.share}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <th scope="row">合计</th>
+                                        <td></td>
+                                        <td></td>
+                                        <td style="color: red">{{fund.show_head_bond_share}} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

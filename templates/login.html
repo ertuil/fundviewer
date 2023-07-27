@@ -1,0 +1,32 @@
+{% extends 'main.html' %}
+
+{% block main %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form action="/user/login" method="post">
+                <div class="mb-3 mt-3">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <span class="input-group-text">用户名</span>
+                        <input type="text" class="form-control" id="user" aria-label="用户名" name="username">
+                    </div>
+                </div>
+                <div class="mb-3 mt-3">
+                    <div class="input-group">
+                        <span class="input-group-text">密码</span>
+                        <input type="password" class="form-control" id="密码" aria-label="First name" name="password">
+                    </div>
+                </div>
+                <div class="mb-3 mt-3">
+                    <div class="input-group">
+                        <button class="btn btn-primary" type="submit">登录</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
