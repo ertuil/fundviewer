@@ -190,9 +190,11 @@ def get_watch_info(watch_funds: List[WatchFund]):
         if fundprice is None:
             result["unit_price"] = "---"
             result["rate1"] = "---"
+            result["last_day"] = ""
         else:
             result["unit_price"] = fundprice.unit_price
             result["rate1"] = round(fundprice.rate1*100, 2)
+            result["last_day"] = fundprice.last_day.strftime("%m-%d")
 
         if fund is None:
             continue
@@ -204,5 +206,6 @@ def get_watch_info(watch_funds: List[WatchFund]):
             logger.error(f"Error getting fund {wf.fundcode}: {e}")
             result["rt_time"] = "---"
             result["rt_rate"] = "---"
+        logger.debug(result)
         fund_info.append(result)
     return index_now, china_index, fund_info

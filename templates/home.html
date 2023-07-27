@@ -74,8 +74,8 @@
                         <th scope="row" style="vertical-align: middle">{{forloop.counter}}</th>
                         <td style="vertical-align: middle">{{fund.code}}</td>
                         <td style="vertical-align: middle">{{fund.name}}</td>
-                        <td style="vertical-align: middle">{{fund.unit_price}}</td>
-                        <td style="color:{%if fund.rate1 >= 0%}red{%else%}green{%endif%}; vertical-align: middle">{{fund.rate1}}%</td>
+                        <td style="vertical-align: middle">{{fund.unit_price}} ({{fund.last_day}})</td>
+                        <td style="color:{%if fund.rate1 >= 0%}red{%else%}green{%endif%}; vertical-align: middle">{{fund.rate1}}% ({{fund.last_day}})</td>
                         <td style="color:{%if fund.rt_rate >= 0%}red{%else%}green{%endif%}; vertical-align: middle">{{fund.rt_rate}}% ({{fund.rt_time}})</td>
                         <td>
                             <a type="button" class="btn btn-outline-primary btn-sm" href="/fund/{{fund.code}}">查看</a>
