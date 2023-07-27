@@ -1,0 +1,5 @@
+DJANGO_SECRET_KEY = django-insecure-xxxxxx
+DJANGO_DEBUG = True
+MARIADB_ROOT_PASSWORD = xxxxxx
+MARIADB_DATABASE = xxxxxx
+MARIADB_ROOT_HOST = %

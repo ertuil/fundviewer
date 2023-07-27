@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user',
     'fund',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -79,18 +80,19 @@ WSGI_APPLICATION = 'fundviewer.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'data/db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv("MARIADB_DATABASE"),
+        'USER': 'root',
+        'PASSWORD': os.getenv("MARIADB_ROOT_PASSWORD"),
+        'HOST': 'mysql',
+        'PORT': '3306',
     }
 }
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': BASE_DIR / 'data/cache',
-        'OPTIONS': {
-            'MAX_ENTRIES': 1000,
-        },
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': "redis://redis:6379",
         'TIMEOUT': 86400 * 15,
     },
 }
@@ -149,6 +151,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

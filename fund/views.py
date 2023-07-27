@@ -1,10 +1,12 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from django.http import HttpRequest, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from .models import WatchFund
+from user.models import Token
 from .api import Fund, get_fund, get_price, get_rt_price, get_index
 from django.core.cache import cache
+from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 import logging
 # Create your views here.
 logger = logging.getLogger("root")
@@ -61,8 +63,22 @@ def fund_view(request: HttpRequest, code: str = None):
     return render(request, 'fund_info.html', {'fund': fund, 'fundprice': fundprice, 'fundrt': fund_rt_show, 'fundrt_now': now, 'favour': in_favour})
 
 
-@login_required(login_url='/user/login')
 def fund_rt_price(request: HttpRequest, code: str = None):
+    user: Union[AbstractBaseUser, AnonymousUser] = request.user
+
+    if not user.is_authenticated:
+        auth_header = request.headers.get('Authorization', None)
+        if auth_header is None:
+            return redirect('/user/login')
+        try:
+            token = auth_header.split()[1]
+            tl = Token.objects.filter(token=token)
+            if len(tl) == 0:
+                return JsonResponse({'status': 'error', 'msg': 'wrong token'}, status=401)
+        except Exception as e:
+            logger.error(f"Error getting token: {e}")
+            return JsonResponse({'status': 'error', 'msg': 'wrong token'}, status=401)
+
     if code is None:
         if request.method == 'GET':
             code = request.GET.get('code', None)
@@ -114,7 +130,7 @@ def watch_add(request: HttpRequest, code: str = None):
 
 @login_required(login_url='/user/login')
 def watch_del(request: HttpRequest, code: str = None):
-    user = request.user
+    user: Union[AbstractBaseUser, AnonymousUser] = request.user
     username = user.username
     try:
         watch_funds = WatchFund.objects.get(username=username, fundcode=code).delete()
